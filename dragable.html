@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+.config-parent {
+  border: 2px solid #DFA612;
+  color: black;
+  display: flex;
+  font-family: sans-serif;
+  font-weight: bold;
+}
+
+.config-origin {
+  flex-basis: 100%;
+  flex-grow: 1;
+  padding: 10px;
+}
+
+.config-draggable {
+  background-color: #4AAE9B;
+  font-weight: normal;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  padding: 10px;
+}
+
+.config-dropzone {
+  background-color: #6DB65B;
+  flex-basis: 100%;
+  flex-grow: 1;
+  padding: 10px;
+}
+
+    </style>
+</head>
+<body>
+
+
+    
+
+<div class="config-parent">
+    <h1>To-do list</h1>
+    <div class="config-origin">
+      To-do
+      
+      <img src="images/D-NC-ALC-PAL-REFILL-AGED-BLOOD.png" alt="Image 1"  id="draggable-1"
+      class="config-draggable"
+      draggable="true"
+      ondragstart="onDragStart(event);" />
+      
+      
+      <img src="images/D-NC-ALC-PAL-REFILL-BRUISE-TONE.png" alt="Image 1"  id="draggable-2"
+      class="config-draggable"
+      draggable="true"
+      ondragstart="onDragStart(event);" />
+ 
+     
+      <img src="images/D-NC-ALC-PAL-REFILL-BEIGE-TONE.png" alt="Image 1" id="draggable-3"
+      class="config-draggable"
+      draggable="true"
+      ondragstart="onDragStart(event);">
+     
+    
+      <img src="images/D-NC-ALC-PAL-REFILL-CHOCOLATE.png" alt="Image 1" id="draggable-4"
+      class="config-draggable"
+      draggable="true"
+      ondragstart="onDragStart(event);" />
+
+  
+    <div
+      class="config-dropzone"
+      ondragover="onDragOver(event);"
+      ondrop="onDrop(event);"
+    >
+     
+    </div>
+
+
+    <div class="reset-container">
+        <button id="reset-button">Reset</button>
+    </div>
+
+    <button id="Submit">Done</button>
+
+  </div>
+
+
+<script>
+
+
+function onDragStart(event) {
+  event.dataTransfer.setData('text/plain', event.target.id);
+  event.currentTarget.style.backgroundColor = 'yellow';
+}
+
+function onDragOver(event) {
+  event.preventDefault();
+}
+
+function onDrop(event) {
+  const id = event.dataTransfer.getData('text');
+  const draggableElement = document.getElementById(id);
+  const dropzone = event.target;
+  const clonedElement = draggableElement.cloneNode(true);
+  const uniqueId = 'draggable-' + Date.now();
+  clonedElement.id = uniqueId;
+  clonedElement.addEventListener('dragstart', onDragStart);
+  dropzone.appendChild(clonedElement);
+  event.dataTransfer.clearData();
+}
+
+function reset() {
+  const configOrigin = document.querySelector('.config-origin');
+  const configDropzone = document.querySelector('.config-dropzone');
+
+  // Remove all draggable elements from the dropzone
+  configDropzone.innerHTML = '';
+
+  // Restore the original draggable elements in the origin container
+  const originalDraggables = configOrigin.querySelectorAll('.config-draggable');
+  originalDraggables.forEach(function (draggableElement) {
+    draggableElement.style.backgroundColor = '';
+  });
+}
+
+const draggableElements = document.querySelectorAll('.config-draggable');
+draggableElements.forEach(function (draggableElement) {
+  draggableElement.addEventListener('dragend', function (event) {
+    event.currentTarget.style.backgroundColor = '';
+  });
+});
+
+const configOrigin = document.querySelector('.config-origin');
+configOrigin.addEventListener('dragstart', function (event) {
+  if (event.target.classList.contains('config-draggable')) {
+    event.dataTransfer.setData('text/plain', event.target.id);
+    event.currentTarget.style.backgroundColor = 'yellow';
+  }
+});
+
+const resetButton = document.getElementById('reset-button');
+resetButton.addEventListener('click', reset);
+
+
+
+  </script>
+    
+</body>
+</html>
+

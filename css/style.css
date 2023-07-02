@@ -1,0 +1,60 @@
+.draggable { float: left; 
+ font-size: .9em;
+  overflow: hidden;
+  width: 102px;
+  margin: 10px;
+
+}
+
+
+.ui-widget-header p, .ui-widget-content p { margin: 0; }
+#snaptarget { height: 140px; }
+
+
+.container-full{
+  width:1400px;
+  margin: 0 auto;
+  max-width: 100%;
+
+}
+
+.row-col-wth{
+  width:100%;
+}
+
+.width60{
+  width: 70%;
+  float: right;
+}
+
+.width40{
+  width: 30%;
+  float: left;
+}
+
+#snaptarget{
+  background:transparent url(https://cdn.shopify.com/s/files/1/0108/4768/2624/files/11_large.jpg?v=1686577889)no-repeat top center;
+  height:360px;
+  width:90%;
+  margin-left: 20px;
+  position: relative;
+  padding-top: 26em;
+}
+
+.cover-pal{
+  position: absolute;
+  width:65%;
+  margin-top: -1em;
+  z-index: -1;
+}
+
+
+.drag-items .image-fluid{
+  width: 100%;
+  padding: 0;
+}
+
+.buttonadd-cart{
+  float: none;
+  width:100%;
+}

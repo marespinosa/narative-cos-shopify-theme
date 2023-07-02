@@ -1,0 +1,266 @@
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- assign featured_media = current_variant.featured_media | default: product.featured_media -%}
+
+{% if product == empty %}
+  {%- assign section_onboarding = true -%}
+  {%- assign onboarding_title = 'homepage.onboarding.product_title' | t -%}
+{% endif %}
+
+
+<div class="container-full">
+
+  <div class="config-parent">
+    <div class="config-origin">
+
+    <form action="/cart/add" method="post">
+
+      <div class="mainwrapper">
+           {% for variant in product.variants %}
+
+            {% if variant.image %}
+            <div  class="config-draggable prod-wrapper"
+            draggable="true"
+            ondragstart="onDragStart(event);"
+            id="draggable--{{ forloop.parent.index0 }}-{{ forloop.index0 }}"  style="background-image:url({{ variant.image | img_url: 'medium' }})">
+            <input
+              name="id[]"  type="checkbox"
+              id="ProductSelect-{{ forloop.parent.index0 }}-{{ forloop.index0 }}"
+              data-index="option{{ forloop.parent.index }}-{{ forloop.index }}"
+              value="{{ variant.id }}" >
+            
+            <label for="{{ variant.id }}">
+              <span class="thsi">this</span>
+            </label>
+
+            </div>
+
+          {% endif %}
+        {% endfor %}
+
+
+    </div>
+
+    <div
+      class="config-dropzone"
+      ondragover="onDragOver(event);"
+      ondrop="onDrop(event);"></div>
+
+
+    <input type="submit" value="Add to cart" class="btn"  onclick="submitForm()" />
+
+    </form>
+
+
+    {% if request.params.id %}
+    {% for id in request.params.id %}
+      {% assign variant = all_variants[id] %}
+      {% assign quantity = 1 %} {# Adjust the quantity as needed #}
+      {% assign line_item_properties = '' %} {# Add any line item properties if required #}
+      {% assign item = variant.id | append: ':' | append: quantity | append: ':' | append: line_item_properties %}
+      {{ item | add_to_cart: variant.id }}
+    {% endfor %}
+  {% endif %}
+
+
+  </div>
+
+  <div class="reset-container">
+      <button id="reset-button">Reset</button>
+  </div>
+
+
+  
+  <div class="reset-container">
+      <button onclick="captureArrangementAsJPG()">Capture</button>
+  </div>
+
+
+
+
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.0/html2canvas.min.js"></script>
+
+<script>
+  function onDragStart(event) {
+    event.dataTransfer.setData('text/plain', event.target.id);
+    const checkbox = event.target.querySelector('input[type="checkbox"]');
+    if (checkbox) {
+      checkbox.checked = true;
+    }
+  }
+
+  function onDragOver(event) {
+    event.preventDefault();
+  }
+
+  let elementOrder = [];
+
+  function onDrop(event) {
+    const id = event.dataTransfer.getData('text');
+    const draggableElement = document.getElementById(id);
+    const dropzone = event.target;
+    const clonedElement = draggableElement.cloneNode(true);
+    const uniqueId = 'draggable-' + Date.now();
+    clonedElement.id = uniqueId;
+    clonedElement.addEventListener('dragstart', onDragStart);
+    dropzone.appendChild(clonedElement);
+    event.dataTransfer.clearData();
+    elementOrder.push(uniqueId);
+  }
+
+  function reset() {
+    const configOrigin = document.querySelector('.config-origin');
+    const configDropzone = document.querySelector('.config-dropzone');
+    configDropzone.innerHTML = '';
+    const originalDraggables = configOrigin.querySelectorAll('.config-draggable');
+    originalDraggables.forEach(function(draggableElement) {
+      draggableElement.style.backgroundColor = '';
+    });
+  }
+
+  const draggableElements = document.querySelectorAll('.config-draggable');
+  draggableElements.forEach(function(draggableElement) {
+    draggableElement.addEventListener('dragend', function(event) {
+      event.currentTarget.style.backgroundColor = '';
+    });
+  });
+
+  const configOrigin = document.querySelector('.config-origin');
+  configOrigin.addEventListener('dragstart', function(event) {
+    if (event.target.classList.contains('config-draggable')) {
+      event.dataTransfer.setData('text/plain', event.target.id);
+      event.currentTarget.style.backgroundColor = 'none';
+    }
+  });
+
+  const resetButton = document.getElementById('reset-button');
+  resetButton.addEventListener('click', reset);
+
+
+  function getVariantArrangement() {
+    const variantArrangement = elementOrder.map(function(uniqueId) {
+      const draggableElement = document.getElementById(uniqueId);
+      const labelElement = draggableElement.querySelector('label');
+      const styleAttribute = labelElement.getAttribute('style');
+      const backgroundImageUrl = styleAttribute.match(/background-image:\s?url\("(.+?)"\)/)[1];
+      return backgroundImageUrl;
+    });
+  
+    return variantArrangement;
+  }
+  
+  function captureArrangementAsJPG() {
+    const arrangementContainer = document.querySelector('.config-dropzone');
+  
+    html2canvas(arrangementContainer).then(function(canvas) {
+      const jpgDataUrl = canvas.toDataURL('image/jpeg');
+      const link = document.createElement('a');
+      link.href = jpgDataUrl;
+      link.download = 'variant_arrangement.jpg';
+      link.click();
+    });
+  }
+
+  
+  
+  
+  
+</script>
+
+
+
+
+
+{{ 'custom.css' | asset_url | stylesheet_tag }}
+
+{% schema %}
+  {
+    "name": "Pilate Generator",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_vendor",
+        "label": "Show vendor",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_tax_and_shipping",
+        "label": "Show tax and shipping information",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "show_sku",
+        "label": "Show SKU",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "show_quantity",
+        "label": "Show quantity selector",
+        "default": true
+      }, {
+        "type": "select",
+        "id": "description_position",
+        "label": "Description position",
+        "default": "",
+        "options": [
+          {
+            "value": "",
+            "label": "In right hand column"
+          }, {
+            "value": "under",
+            "label": "Below product images"
+          }
+        ]
+      }, {
+        "type": "checkbox",
+        "id": "show_share_buttons",
+        "label": "Show social sharing buttons",
+        "default": true
+      }, {
+        "type": "checkbox",
+        "id": "enable_payment_button",
+        "label": "Show dynamic checkout button",
+        "info": "Lets customers check out directly using a familiar payment method. [Learn more](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+        "default": true
+      }, {
+        "type": "checkbox",
+        "id": "show_backorder_text",
+        "label": "Show backorder text",
+        "default": true,
+        "info": "Only shows for products which use Shopify inventory tracking and are available to purchase when out of stock."
+      }, {
+        "type": "header",
+        "content": "Media"
+      }, {
+        "type": "paragraph",
+        "content": "Learn more about [media types](https://help.shopify.com/en/manual/products/product-media)"
+      }, {
+        "type": "select",
+        "id": "thumbnail_position",
+        "label": "Thumbnails position",
+        "default": "beside",
+        "options": [
+          {
+            "label": "Beside the main image",
+            "value": "beside"
+          }, {
+            "label": "Below the main image",
+            "value": "below"
+          }
+        ]
+      }, {
+        "type": "checkbox",
+        "id": "enable_video_looping",
+        "label": {
+          "en": "Enable video looping"
+        },
+        "default": false
+      }
+    ]
+  }
+{% endschema %}

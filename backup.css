@@ -1,0 +1,95 @@
+
+/* Configurator */
+
+
+.draggable { float: left; 
+  font-size: .9em;
+   overflow: hidden;
+   width: 65px;
+   margin: 10px;
+ 
+ }
+ 
+ 
+ .ui-widget-header p, .ui-widget-content p { margin: 0; }
+ #snaptarget { height: 140px; }
+ 
+ 
+ .container-full{
+   width:1400px;
+   margin: 0 auto;
+   max-width: 100%;
+  overflow: hidden;
+ }
+ 
+ .row-col-wth{
+   width:100%;
+ }
+ 
+ .width50{
+   width: 50%;
+   float: left;
+ }
+ 
+ .cover-pal{
+   position: absolute;
+   width:65%;
+   margin-top: -1em;
+   z-index: -1;
+ }
+ 
+ 
+ .drag-items .image-fluid{
+   width: 100%;
+   padding: 0;
+ }
+
+
+ .buttonadd-cart{
+  float: none;
+  width:100%;
+}
+
+
+
+.config-origin {
+  flex-basis: 100%;
+  flex-grow: 1;
+}
+
+.config-dropzone {
+  background-color: #6db65b;
+  float: none;
+  display: inline-block;
+  background:transparent url(https://cdn.shopify.com/s/files/1/0108/4768/2624/files/11_large.jpg)no-repeat top left;
+  height:500px;
+  width: 43%;
+  padding-top: 15em;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.mainwrapper{
+  width:50%;
+  float: left;
+}
+
+.prod-wrapper{
+  height: 90px;
+  width: 72px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  float: left;
+  margin: 15px -1px -5px 5px;
+}
+
+.thsi{
+  padding: 36px 20px;
+    margin: 0 5px;
+    color: transparent;
+}
+
+
+.config-dropzone .prod-wrapper{
+    
+}
